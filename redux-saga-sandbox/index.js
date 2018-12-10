@@ -117,3 +117,20 @@ saga = function*() {
 };
 
 run(saga);
+
+//takeLast
+
+process = function*() {
+  let timesLooped = 0;
+  while (true) {
+    console.log(`Loop ${timesLooped++} times`);
+    yield delay(500);
+  }
+};
+
+saga = function*() {
+  yield effects.takeLatest('START_PROCESS', process);
+};
+
+run(saga);
+window.dispatch({ type: 'START_PROCESS' });
