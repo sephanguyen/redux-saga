@@ -54,19 +54,32 @@ saga = function*() {
 run(saga);
 
 //fork
-function* fn_fork() {
-  while (true) {
-    console.log('FN!');
-    yield delay(10000);
-  }
-}
+// function* fn_fork() {
+//   while (true) {
+//     console.log('FN!');
+//     yield delay(10000);
+//   }
+// }
 
-saga = function*() {
+// saga = function*() {
+//   while (true) {
+//     yield effects.fork(fn_fork);
+//     console.log('saga!');
+//     yield delay(500);
+//   }
+// };
+
+// run(saga);
+
+let process = function*() {
   while (true) {
-    yield effects.fork(fn_fork);
-    console.log('saga!');
-    yield delay(500);
+    console.log('Process loop.');
+    yield delay(1000);
   }
 };
 
+saga = function*() {
+  yield effects.takeEvery('START_PROCESS', process);
+  console.log('Saga got to the end');
+};
 run(saga);
