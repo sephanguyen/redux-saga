@@ -71,15 +71,49 @@ run(saga);
 
 // run(saga);
 
-let process = function*() {
-  while (true) {
-    console.log('Process loop.');
-    yield delay(1000);
+// let process = function*() {
+//   while (true) {
+//     console.log('Process loop.');
+//     yield delay(1000);
+//   }
+// };
+
+// saga = function*() {
+//   yield effects.takeEvery('START_PROCESS', process);
+//   console.log('Saga got to the end');
+// };
+// run(saga);
+// window.dispatch({ type: 'START_PROCESS', value: 42 });
+
+//cancel redux saga
+
+// process = function*() {
+//   try {
+//     while (true) {
+//       console.log('Process loop.');
+//       yield delay(500);
+//     }
+//   } finally {
+//     console.log('Cancelled?', effects.cancelled());
+//   }
+// };
+
+process = function*() {
+  try {
+    while (true) {
+      console.log('Process loop.');
+      yield delay(500);
+    }
+  } finally {
+    const cancelled = yield effects.cancelled();
+    console.log('Cancelled?', cancelled);
   }
 };
-
 saga = function*() {
-  yield effects.takeEvery('START_PROCESS', process);
-  console.log('Saga got to the end');
+  let forked = yield effects.fork(process);
+  yield delay(5000);
+  yield effects.cancel(forked);
+  console.log('Done');
 };
+
 run(saga);
