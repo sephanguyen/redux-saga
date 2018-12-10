@@ -52,3 +52,21 @@ saga = function*() {
   yield effects.call(fn);
 };
 run(saga);
+
+//fork
+function* fn_fork() {
+  while (true) {
+    console.log('FN!');
+    yield delay(10000);
+  }
+}
+
+saga = function*() {
+  while (true) {
+    yield effects.fork(fn_fork);
+    console.log('saga!');
+    yield delay(500);
+  }
+};
+
+run(saga);
